@@ -10,13 +10,14 @@ interface BookingModalProps {
   onClose: () => void;
 }
 
-interface FormData {
+export interface FormData {
     name: string;
     email: string;
     phone: string;
     date: string;
     time: string;
     notes: string;
+    sendEmailCopy: boolean;
 }
 
 interface FormErrors {
@@ -33,6 +34,7 @@ const initialFormData: FormData = {
     date: '',
     time: '',
     notes: '',
+    sendEmailCopy: true,
 };
 
 export default function BookingModal({ visible, service, onClose }: BookingModalProps) {
@@ -40,12 +42,15 @@ export default function BookingModal({ visible, service, onClose }: BookingModal
     const { user: loggedInUser } = useAuth();
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [errors, setErrors] = useState<FormErrors>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     useEffect(() => {
         if (visible) {
             setIsSubmitted(false);
             setErrors({});
+            setSubmitError('');
             if (loggedInUser) {
                 setFormData({
                     ...initialFormData,
@@ -78,18 +83,44 @@ export default function BookingModal({ visible, service, onClose }: BookingModal
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, type } = e.target;
+        if (type === 'checkbox') {
+            const { checked } = e.target as HTMLInputElement;
+            setFormData(prev => ({ ...prev, [name]: checked }));
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }));
+        }
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setSubmitError('');
         const formErrors = validate();
         setErrors(formErrors);
 
         if (Object.keys(formErrors).length === 0) {
-            console.log("Booking request submitted:", { serviceId: service?.id, ...formData });
-            setIsSubmitted(true);
+            setIsSubmitting(true);
+            try {
+                const response = await fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        formData,
+                        serviceTitle: service?.title,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                setIsSubmitted(true);
+            } catch (error) {
+                console.error("Failed to send booking email:", error);
+                setSubmitError(t('bookingModal.submitError'));
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -141,8 +172,26 @@ export default function BookingModal({ visible, service, onClose }: BookingModal
                                         <textarea id="notes" name="notes" rows={3} value={formData.notes} onChange={handleInputChange} className="mt-1 block w-full input"></textarea>
                                     </div>
                                     
-                                    <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 mt-6">
-                                        {t('bookingModal.submit')}
+                                    <div className="flex items-start">
+                                        <div className="flex items-center h-5">
+                                            <input
+                                                id="sendEmailCopy"
+                                                name="sendEmailCopy"
+                                                type="checkbox"
+                                                checked={formData.sendEmailCopy}
+                                                onChange={handleInputChange}
+                                                className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                            />
+                                        </div>
+                                        <div className="ml-3 text-sm">
+                                            <label htmlFor="sendEmailCopy" className="font-medium text-gray-700">{t('bookingModal.form.sendEmailCopy')}</label>
+                                        </div>
+                                    </div>
+
+                                    {submitError && <p className="text-red-500 text-sm mt-2 text-center">{submitError}</p>}
+
+                                    <button type="submit" disabled={isSubmitting} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 mt-2 disabled:bg-orange-400 disabled:cursor-not-allowed">
+                                        {isSubmitting ? t('bookingModal.submitting') : t('bookingModal.submit')}
                                     </button>
                                 </form>
                                 <aside className="bg-slate-50 p-6 rounded-lg mt-8 md:mt-0">
