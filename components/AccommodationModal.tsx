@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FormEvent } from 'react';
+import emailjs from '@emailjs/browser';
 import { useLanguage } from '../hooks/useLanguage';
 import { XMarkIcon, CheckCircleIcon, BuildingOfficeIcon, HomeIcon } from './Icons';
 
@@ -41,6 +42,8 @@ export default function AccommodationModal({ visible, onClose }: AccommodationMo
     const { t } = useLanguage();
     const [formData, setFormData] = useState<FormData>(initialFormData);
     const [errors, setErrors] = useState<FormErrors>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     useEffect(() => {
@@ -48,6 +51,8 @@ export default function AccommodationModal({ visible, onClose }: AccommodationMo
             setIsSubmitted(false);
             setFormData(initialFormData);
             setErrors({});
+            setIsSubmitting(false);
+            setSubmitError('');
         }
     }, [visible]);
 
@@ -69,14 +74,48 @@ export default function AccommodationModal({ visible, onClose }: AccommodationMo
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setSubmitError('');
         const formErrors = validate();
         setErrors(formErrors);
 
         if (Object.keys(formErrors).length === 0) {
-            console.log("Accommodation request submitted:", formData);
-            setIsSubmitted(true);
+            setIsSubmitting(true);
+            
+            const serviceID = 'service_txnnuzj';
+            const templateID = 'template_cwo7o5s';
+            const publicKey = 'g_CgIiJ0gl1LwjgLY';
+
+            const messageBody = `
+                New accommodation assistance request with the following details:
+                
+                Accommodation Type: ${t(`accommodationModal.form.types.${formData.accommodationType}`)}
+                Duration of Stay: ${formData.duration}
+                Number of Guests: ${formData.guests}
+                Preferred Area: ${formData.area || 'Not specified'}
+                Budget per Night: ${formData.budget || 'Not specified'}
+                
+                Additional Notes:
+                ${formData.notes || 'None'}
+            `.trim().replace(/^ +/gm, '');
+
+            const templateParams = {
+                name: formData.name,
+                email: formData.email,
+                message: messageBody,
+                form_type: 'Accommodation Assistance Request',
+            };
+
+            try {
+                await emailjs.send(serviceID, templateID, templateParams, publicKey);
+                setIsSubmitted(true);
+            } catch (error) {
+                console.error("Failed to send accommodation request via EmailJS:", error);
+                setSubmitError(t('accommodationModal.submitError'));
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -173,8 +212,9 @@ export default function AccommodationModal({ visible, onClose }: AccommodationMo
                                     <textarea id="notes" name="notes" rows={3} value={formData.notes} onChange={handleInputChange} className="mt-1 block w-full input"></textarea>
                                 </div>
                                 
-                                <button type="submit" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 mt-6">
-                                    {t('accommodationModal.submit')}
+                                {submitError && <p className="text-red-500 text-sm text-center mt-4">{submitError}</p>}
+                                <button type="submit" disabled={isSubmitting} className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 mt-6 disabled:bg-amber-400 disabled:cursor-not-allowed">
+                                    {isSubmitting ? t('accommodationModal.submitting') : t('accommodationModal.submit')}
                                 </button>
                             </form>
                         </>
