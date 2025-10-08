@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FormEvent } from 'react';
+import emailjs from '@emailjs/browser';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
 import { type TherapyService } from '../types';
@@ -100,23 +101,39 @@ export default function BookingModal({ visible, service, onClose }: BookingModal
 
         if (Object.keys(formErrors).length === 0) {
             setIsSubmitting(true);
+            
+            const serviceID = 'service_txnnuzj';
+            const templateID = 'template_cwo7o5s';
+            const publicKey = 'g_CgIiJ0gl1LwjgLY';
+
+            const messageBody = `
+                New booking request with the following details:
+                
+                Service: ${service?.title}
+                Preferred Date: ${formData.date}
+                Preferred Time: ${formData.time}
+                Phone Number: ${formData.phone || 'Not provided'}
+                
+                Additional Notes:
+                ${formData.notes || 'None'}
+            `.trim().replace(/^ +/gm, '');
+
+            const templateParams = {
+                name: formData.name,
+                email: formData.email,
+                message: messageBody,
+                form_type: 'Booking Request',
+                service_title: service?.title,
+            };
+            
+            // Note: Sending a copy to the client should be configured via
+            // the "Auto Reply" feature in your EmailJS template settings for reliability.
+
             try {
-                const response = await fetch('/api/send-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        formData,
-                        serviceTitle: service?.title,
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
+                await emailjs.send(serviceID, templateID, templateParams, publicKey);
                 setIsSubmitted(true);
             } catch (error) {
-                console.error("Failed to send booking email:", error);
+                console.error("Failed to send booking email via EmailJS:", error);
                 setSubmitError(t('bookingModal.submitError'));
             } finally {
                 setIsSubmitting(false);

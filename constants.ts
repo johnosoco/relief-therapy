@@ -1,25 +1,18 @@
 import { type Translations } from './types';
-import { 
-    UsersIcon, 
-    FaceSmileIcon, 
-    SparklesIcon,
-    BuildingOfficeIcon,
-    PhoneIcon,
-    UserIcon
-} from './components/Icons';
+import { LogoIcon } from './components/Icons';
 
 export const serviceIcons = {
-    'artTherapy': SparklesIcon,
-    'speechTherapy': FaceSmileIcon,
-    'adultTherapy': UserIcon,
-    'childBehavioralTherapy': FaceSmileIcon,
-    'pregnancyEmotionRegulation': UserIcon,
-    'musicTherapy': SparklesIcon,
-    'movementTherapy': SparklesIcon,
-    'groupTraining': UsersIcon,
-    'ageTherapy': UsersIcon,
-    'onlineTherapy': UserIcon,
-    'visitorSupport': SparklesIcon,
+    'artTherapy': LogoIcon,
+    'speechTherapy': LogoIcon,
+    'adultTherapy': LogoIcon,
+    'childBehavioralTherapy': LogoIcon,
+    'pregnancyEmotionRegulation': LogoIcon,
+    'musicTherapy': LogoIcon,
+    'movementTherapy': LogoIcon,
+    'groupTraining': LogoIcon,
+    'ageTherapy': LogoIcon,
+    'onlineTherapy': LogoIcon,
+    'visitorSupport': LogoIcon,
 };
 
 export const therapyServicesData = [
@@ -130,7 +123,7 @@ export const testimonialsData = [
 export const translations: Translations = {
   en: {
     header: {
-      visitSite: 'Visit Main Site',
+      visitSite: 'Visit Website',
       contact: 'Contact Us',
       meetTheCEO: 'Meet Our CEO',
       nav: {
@@ -211,9 +204,26 @@ export const translations: Translations = {
     },
     contactModal: {
       title: 'Get In Touch',
-      description: 'We are here to help. Reach out to us via email or phone.',
+      description: 'Have a question? Fill out the form below to get in touch.',
       email: 'reliefefoyita57@gmail.com',
       phone: '+251932520157',
+      form: {
+        name: 'Full Name',
+        email: 'Email Address',
+        message: 'Message',
+      },
+      submit: 'Send Message',
+      submitting: 'Sending...',
+      submitError: 'Could not send message. Please try again later.',
+      successTitle: 'Message Sent!',
+      successMessage: "Thank you for reaching out. We'll get back to you as soon as possible.",
+      validation: {
+        nameRequired: 'Full name is required.',
+        emailRequired: 'Email is required.',
+        emailInvalid: 'Please enter a valid email address.',
+        messageRequired: 'Message is required.',
+        messageMinLength: 'Message must be at least 10 characters long.',
+      }
     },
     visitorSupport: {
       title: 'Comprehensive Support for Visitors',
@@ -309,6 +319,10 @@ export const translations: Translations = {
       therapy: 'Therapy',
       training: 'Training',
     },
+    adBanner: {
+      text: 'Special Offer: Get 20% off your first online therapy session! Limited time only.',
+      cta: 'Learn More',
+    },
     auth: {
       login: 'Login',
       signup: 'Sign Up',
@@ -356,7 +370,7 @@ export const translations: Translations = {
   },
   am: {
     header: {
-      visitSite: 'ዋናውን ገጽ ይጎብኙ',
+      visitSite: 'ድህረገፅ ይጎብኙ',
       contact: 'ያግኙን',
       meetTheCEO: 'ዋና ስራ አስፈፃሚዋን ያግኙ',
       nav: {
@@ -437,9 +451,26 @@ export const translations: Translations = {
     },
     contactModal: {
       title: 'ያግኙን',
-      description: 'ለመርዳት ዝግጁ ነን። በኢሜል ወይም በስልክ ያግኙን።',
+      description: 'ጥያቄ አለዎት? ከታች ያለውን ቅጽ በመሙላት ያግኙን።',
       email: 'reliefefoyita57@gmail.com',
       phone: '+251932520157',
+      form: {
+        name: 'ሙሉ ስም',
+        email: 'ኢሜይል አድራሻ',
+        message: 'መልዕክት',
+      },
+      submit: 'መልዕክት ላክ',
+      submitting: 'በመላክ ላይ...',
+      submitError: 'መልዕክቱን መላክ አልተቻለም። እባክዎ ቆይተው እንደገና ይሞክሩ።',
+      successTitle: 'መልዕክቱ ተልኳል!',
+      successMessage: 'ስለደረሱን እናመሰግናለን። በተቻለ ፍጥነት ወደ እርስዎ እንመለሳለን።',
+      validation: {
+        nameRequired: 'ሙሉ ስም ያስፈልጋል።',
+        emailRequired: 'ኢሜይል ያስፈልጋል።',
+        emailInvalid: 'እባክዎ ትክክለኛ የኢሜይል አድራሻ ያስገቡ።',
+        messageRequired: 'መልዕክት ያስፈልጋል።',
+        messageMinLength: 'መልዕክቱ ቢያንስ 10 ቁምፊዎች መሆን አለበት።',
+      }
     },
     visitorSupport: {
       title: 'ለጎብኚዎች አጠቃላይ ድጋፍ',
@@ -534,6 +565,10 @@ export const translations: Translations = {
       counseling: 'ምክር',
       therapy: 'ቴራፒ',
       training: 'ስልጠና',
+    },
+    adBanner: {
+      text: 'ልዩ ቅናሽ፡ በመጀመሪያው የኦንላይን ቴራፒ ክፍለ ጊዜዎ 20% ቅናሽ ያግኙ! ለተወሰነ ጊዜ ብቻ።',
+      cta: 'ተጨማሪ እወቅ',
     },
     auth: {
       login: 'ግባ',

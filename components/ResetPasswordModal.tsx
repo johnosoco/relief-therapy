@@ -1,7 +1,7 @@
 import React, { useState, FormEvent, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../hooks/useLanguage';
-import { XMarkIcon, LockClosedIcon, CheckCircleIcon } from './Icons';
+import { XMarkIcon, LockClosedIcon, CheckCircleIcon, EyeIcon, EyeSlashIcon } from './Icons';
 
 interface ResetPasswordModalProps {
   visible: boolean;
@@ -16,6 +16,8 @@ const ResetPasswordModal = ({ visible, onClose, onSuccess, token }: ResetPasswor
   const [formData, setFormData] = useState({ newPassword: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (visible) {
@@ -89,8 +91,28 @@ const ResetPasswordModal = ({ visible, onClose, onSuccess, token }: ResetPasswor
                 {error && <p className="bg-red-100 text-red-700 text-sm p-3 rounded-md mb-4 text-center">{error}</p>}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <InputField icon={<LockClosedIcon />} label={t('auth.form.newPassword')} name="newPassword" type="password" value={formData.newPassword} onChange={handleInputChange} required />
-                    <InputField icon={<LockClosedIcon />} label={t('auth.form.confirmPassword')} name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleInputChange} required />
+                    <InputField 
+                        icon={<LockClosedIcon />} 
+                        label={t('auth.form.newPassword')} 
+                        name="newPassword" 
+                        type={showNewPassword ? 'text' : 'password'} 
+                        value={formData.newPassword} 
+                        onChange={handleInputChange} 
+                        toggleVisibility={() => setShowNewPassword(!showNewPassword)}
+                        isPasswordVisible={showNewPassword}
+                        required 
+                    />
+                    <InputField 
+                        icon={<LockClosedIcon />} 
+                        label={t('auth.form.confirmPassword')} 
+                        name="confirmPassword" 
+                        type={showConfirmPassword ? 'text' : 'password'} 
+                        value={formData.confirmPassword} 
+                        onChange={handleInputChange}
+                        toggleVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
+                        isPasswordVisible={showConfirmPassword}
+                        required 
+                    />
                     
                     <button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 disabled:bg-blue-400">
                         {isLoading ? t('auth.loading') : t('auth.resetPassword')}
@@ -103,7 +125,7 @@ const ResetPasswordModal = ({ visible, onClose, onSuccess, token }: ResetPasswor
   );
 };
 
-const InputField = ({ icon, label, name, type = 'text', value, onChange, ...props }: any) => (
+const InputField = ({ icon, label, name, type = 'text', value, onChange, toggleVisibility, isPasswordVisible, ...props }: any) => (
     <div>
         <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
         <div className="relative mt-1">
@@ -119,6 +141,11 @@ const InputField = ({ icon, label, name, type = 'text', value, onChange, ...prop
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-10 sm:text-sm py-2"
                 {...props}
             />
+            {toggleVisibility && (
+                <button type="button" onClick={toggleVisibility} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600" aria-label={isPasswordVisible ? "Hide password" : "Show password"}>
+                    {isPasswordVisible ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                </button>
+            )}
         </div>
     </div>
 );
