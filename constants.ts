@@ -10,7 +10,6 @@ export const serviceIcons = {
     'groupTraining': LogoIcon,
     'ageTherapy': LogoIcon,
     'onlineTherapy': LogoIcon,
-    'visitorSupport': LogoIcon,
 };
 
 export const therapyServicesData = [
@@ -78,14 +77,6 @@ export const therapyServicesData = [
         rating: 4.8,
         reviewCount: 210,
     },
-    {
-        id: 'visitorSupport',
-        color: '#84cc16', // lime-500
-        duration: 'Varies',
-        category: 'Counseling',
-        rating: 4.9,
-        reviewCount: 25,
-    },
 ];
 
 export const faqsData = [
@@ -141,7 +132,6 @@ export const translations: Translations = {
         'groupTraining': { name: 'Group Training', short: 'Interactive workshops for personal and professional growth.', description: '...' },
         'ageTherapy': { name: 'Age-Specific Therapy', short: 'Tailored therapy for different life stages, from youth to seniors.', description: '...' },
         'onlineTherapy': { name: 'Online Therapy', short: 'Convenient and accessible therapy sessions from anywhere.', description: '...' },
-        'visitorSupport': { name: 'Visitor Support & Guidance', short: 'Comprehensive assistance for visitors in Addis Ababa.', description: '...' },
     },
     faq: {
       title: 'Frequently Asked Questions',
@@ -388,7 +378,6 @@ export const translations: Translations = {
         'groupTraining': { name: 'የቡድን ስልጠና', short: 'ለግል እና ለሙያዊ እድገት በይነተገናኝ ወርክሾፖች።', description: '...' },
         'ageTherapy': { name: 'ከእድሜ ጋር የተገናኘ ሕክምና', short: 'ከወጣትነት እስከ እርጅና ላሉ የተለያዩ የህይወት ደረጃዎች የተዘጋጀ ሕክምና።', description: '...' },
         'onlineTherapy': { name: 'የመስመር ላይ ሕክምና', short: 'ከየትኛውም ቦታ ምቹ እና ተደራሽ የሕክምና ክፍለ ጊዜዎች።', description: '...' },
-        'visitorSupport': { name: 'የጎብኚዎች ድጋፍ እና መመሪያ', short: 'በአዲስ አበባ ለሚገኙ ጎብኚዎች አጠቃላይ ድጋፍ።', description: '...' },
     },
     faq: {
       title: 'ተደጋግመው የሚጠየቁ ጥያቄዎች',
